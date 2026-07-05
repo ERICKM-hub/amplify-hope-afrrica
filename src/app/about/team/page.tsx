@@ -19,6 +19,7 @@ export default function TeamPage() {
       <section style={{ padding: '4rem 1rem', background: styles.white }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto', textAlign: 'center' }}>
           <p style={{ color: styles.neutral600, fontSize: '1.125rem' }}>Team member profiles coming soon...</p>
+          
         </div>
       </section>
     </main>

@@ -1,13 +1,13 @@
 export default function Home() {
   return (
-    <main>
+    <main >
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-primary to-primary-dark text-white py-20 md:py-32">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8 text-center ">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
             Empowering individuals to build stronger communities
           </h1>
-          <p className="text-xl md:text-2xl text-primary-light mb-10 max-w-3xl mx-auto">
+          <p className="text-xl md:text-2xl text-primary-light mb-10 max-w-9xl mx-auto">
             Founded in 2024 by Kenyan changemakers inspired by young women's challenges around menstrual health in Kibera
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
