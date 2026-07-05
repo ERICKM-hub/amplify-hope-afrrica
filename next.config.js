@@ -1,21 +1,22 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Remove 'appDir' - it's now default in Next.js 16
+  
+  // Set the correct root directory for Turbopack
+  turbopack: {
+    root: __dirname,
+  },
+  
+  // Image optimization
   images: {
-    domains: ['amplifyhopeafrica.org'], // Add if you have external images
     formats: ['image/avif', 'image/webp'],
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    minimumCacheTTL: 60,
   },
-  experimental: {
-    optimizeCss: true,
-  },
-  compiler: {
-    removeConsole: process.env.NODE_ENV === 'production',
-  },
-  swcMinify: true,
+  
+  // React strict mode
+  reactStrictMode: true,
+  
+  // Security
   poweredByHeader: false,
-  trailingSlash: false,
 }
 
 module.exports = nextConfig
