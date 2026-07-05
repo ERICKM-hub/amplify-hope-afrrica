@@ -23,7 +23,7 @@ export default function Footer() {
 
   return (
     <footer className="bg-neutral-900 text-white">
-      <div className="container-custom py-12 md:py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Organization Info */}
           <div>
@@ -63,7 +63,7 @@ export default function Footer() {
           {/* Newsletter Signup */}
           <div>
             <h4 className="font-semibold mb-4">Stay Updated</h4>
-            <form action="/api/newsletter" method="POST" className="space-y-3">
+            <form className="space-y-3">
               <input
                 type="email"
                 placeholder="Your email address"

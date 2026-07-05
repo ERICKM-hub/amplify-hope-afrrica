@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { FaBars, FaTimes } from 'react-icons/fa'
-import Button from '@/components/ui/Button'
 
 const navItems = [
   { name: 'Home', href: '/' },
@@ -51,11 +50,13 @@ export default function Header() {
         scrolled ? 'bg-white shadow-lg' : 'bg-transparent'
       }`}
     >
-      <nav className="container-custom" aria-label="Main navigation">
+      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Main navigation">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
-            <span className="text-2xl font-bold text-primary">
+            <span className={`text-2xl font-bold transition-colors ${
+              scrolled ? 'text-primary' : 'text-white'
+            }`}>
               Amplify Hope Africa
             </span>
           </Link>
@@ -69,7 +70,7 @@ export default function Header() {
                   className={`text-sm font-medium transition-colors hover:text-primary ${
                     pathname === item.href || pathname.startsWith(item.href + '/')
                       ? 'text-primary'
-                      : 'text-neutral-700'
+                      : scrolled ? 'text-neutral-700' : 'text-white'
                   }`}
                 >
                   {item.name}
@@ -95,12 +96,21 @@ export default function Header() {
 
           {/* Donate Button & Mobile Menu Toggle */}
           <div className="flex items-center space-x-4">
-            <Button href="/donate" variant="primary" className="hidden md:inline-flex">
+            <Link
+              href="/donate"
+              className={`hidden md:inline-block px-6 py-2 font-semibold rounded-lg transition-colors ${
+                scrolled 
+                  ? 'bg-primary text-white hover:bg-primary-dark' 
+                  : 'bg-secondary text-neutral-900 hover:bg-secondary-dark'
+              }`}
+            >
               Donate
-            </Button>
+            </Link>
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="md:hidden p-2 rounded-lg hover:bg-neutral-100 transition-colors"
+              className={`md:hidden p-2 rounded-lg transition-colors ${
+                scrolled ? 'hover:bg-neutral-100 text-neutral-700' : 'hover:bg-white/10 text-white'
+              }`}
               aria-label="Toggle menu"
             >
               {isOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
@@ -110,7 +120,7 @@ export default function Header() {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <div className="md:hidden py-4 border-t border-neutral-200">
+          <div className="md:hidden py-4 border-t border-neutral-200 bg-white">
             <div className="flex flex-col space-y-4">
               {navItems.map((item) => (
                 <div key={item.name}>
@@ -139,9 +149,12 @@ export default function Header() {
                   )}
                 </div>
               ))}
-              <Button href="/donate" variant="primary" fullWidth>
+              <Link
+                href="/donate"
+                className="block w-full px-6 py-3 bg-primary text-white font-semibold rounded-lg text-center hover:bg-primary-dark transition-colors"
+              >
                 Donate Now
-              </Button>
+              </Link>
             </div>
           </div>
         )}
@@ -149,4 +162,3 @@ export default function Header() {
     </header>
   )
 }
-
