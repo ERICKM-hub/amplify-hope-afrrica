@@ -38,3 +38,9 @@ public/images/optimized/
 scripts/*.js
 !scripts/create-admin.js
 !scripts/create-settings.js
+
+# Scripts (to prevent future credential exposure)
+scripts/*.js
+!scripts/create-admin.js
+!scripts/create-settings.js
+!scripts/drop-index.js
