@@ -44,3 +44,9 @@ scripts/*.js
 !scripts/create-admin.js
 !scripts/create-settings.js
 !scripts/drop-index.js
+
+# Scripts folder - prevent accidental credential exposure
+scripts/*.js
+!scripts/create-admin.js
+!scripts/create-settings.js
+!scripts/drop-index.js
