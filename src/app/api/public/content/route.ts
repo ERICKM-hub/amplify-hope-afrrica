@@ -19,6 +19,11 @@ export async function GET(request: Request) {
     return NextResponse.json({ success: true, data: content });
   } catch (error) {
     console.error('Public Content API error:', error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    // Fix: Handle unknown error type
+    const errorMessage = error instanceof Error ? error.message : 'Failed to fetch content';
+    return NextResponse.json({ 
+      success: false, 
+      error: errorMessage 
+    }, { status: 500 });
   }
 }

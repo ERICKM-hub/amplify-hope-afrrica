@@ -1,88 +1,109 @@
-import NextAuth from 'next-auth';
-import CredentialsProvider from 'next-auth/providers/credentials';
-import { connectToDatabase } from '@/lib/db/mongoose';
-import User from '@/lib/models/User';
-import bcrypt from 'bcryptjs';
+import NextAuth, { type NextAuthOptions } from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+import { connectToDatabase } from "@/lib/db/mongoose";
+import User from "@/lib/models/User";
+import bcrypt from "bcryptjs";
 
-export const authOptions = {
+export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
-      name: 'Credentials',
+      name: "Credentials",
       credentials: {
-        username: { label: 'Username', type: 'text' },
-        password: { label: 'Password', type: 'password' }
+        username: {
+          label: "Username",
+          type: "text",
+        },
+        password: {
+          label: "Password",
+          type: "password",
+        },
       },
+
       async authorize(credentials) {
         try {
           if (!credentials?.username || !credentials?.password) {
-            console.log('❌ Missing credentials');
+            console.log("❌ Missing credentials");
             return null;
           }
 
-          console.log('🔍 Looking for user:', credentials.username);
+          console.log("🔍 Looking for user:", credentials.username);
+
           await connectToDatabase();
-          
-          const user = await User.findOne({ username: credentials.username });
+
+          const user = await User.findOne({
+            username: credentials.username,
+          });
+
           if (!user) {
-            console.log('❌ User not found:', credentials.username);
+            console.log("❌ User not found:", credentials.username);
             return null;
           }
 
-          console.log('✅ User found:', user.username);
-          const isValid = await bcrypt.compare(credentials.password, user.password);
-          
+          console.log("✅ User found:", user.username);
+
+          const isValid = await bcrypt.compare(
+            credentials.password,
+            user.password
+          );
+
           if (!isValid) {
-            console.log('❌ Invalid password for:', credentials.username);
+            console.log("❌ Invalid password for:", credentials.username);
             return null;
           }
 
-          console.log('✅ Authentication successful for:', user.username);
-          return { 
-            id: user._id.toString(), 
+          console.log("✅ Authentication successful for:", user.username);
+
+          return {
+            id: user._id.toString(),
             username: user.username,
-            email: user.email, 
+            email: user.email,
             name: user.name,
-            role: user.role 
+            role: user.role,
           };
         } catch (error) {
-          console.error('❌ Auth error:', error);
+          console.error("❌ Auth error:", error);
           return null;
         }
-      }
-    })
+      },
+    }),
   ],
+
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = user.role;
-        token.id = user.id;
-        token.username = user.username;
+        token.id = (user as any).id;
+        token.role = (user as any).role;
+        token.username = (user as any).username;
       }
+
       return token;
     },
+
     async session({ session, token }) {
       if (session.user) {
-        session.user.role = token.role as string;
-        session.user.id = token.id as string;
-        session.user.username = token.username as string;
+        (session.user as any).id = token.id;
+        (session.user as any).role = token.role;
+        (session.user as any).username = token.username;
       }
+
       return session;
-    }
+    },
   },
+
   pages: {
-    signIn: '/admin/login',
+    signIn: "/admin/login",
   },
+
   session: {
-    strategy: 'jwt',
+    strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60,
   },
+
   secret: process.env.NEXTAUTH_SECRET,
-  debug: true,
+
+  debug: process.env.NODE_ENV === "development",
 };
 
-// Create the NextAuth handler
 const handler = NextAuth(authOptions);
 
-// Export the handler for GET and POST
-export const GET = handler;
-export const POST = handler;
+export { handler as GET, handler as POST };

@@ -1,14 +1,33 @@
-import { NextResponse } from 'next/server';
-import { connectToDatabase } from '@/lib/db/mongoose';
-import TeamMember from '@/lib/models/TeamMember';
+import { NextResponse } from "next/server";
+import { connectToDatabase } from "@/lib/db/mongoose";
+import TeamMember from "@/lib/models/TeamMember";
 
 export async function GET() {
   try {
     await connectToDatabase();
-    const members = await TeamMember.find({ isActive: true }).sort({ order: 1 });
-    return NextResponse.json({ success: true, data: members });
+
+    const members = await TeamMember.find({})
+      .sort({ order: 1 })
+      .lean();
+
+    return NextResponse.json({
+      success: true,
+      data: members,
+    });
   } catch (error) {
-    console.error('Public Team API error:', error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    console.error("Public Team API error:", error);
+
+    const errorMessage =
+      error instanceof Error
+        ? error.message
+        : "Failed to fetch team members";
+
+    return NextResponse.json(
+      {
+        success: false,
+        error: errorMessage,
+      },
+      { status: 500 }
+    );
   }
 }

@@ -3,15 +3,12 @@ const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   trailingSlash: false,
-  // Enable CSS optimization
+  images: {
+    domains: ['amplifyhopeafrica.org', 'res.cloudinary.com', 'images.unsplash.com'],
+    formats: ['image/avif', 'image/webp'],
+  },
   experimental: {
     optimizeCss: true,
-  },
-  // Turbopack configuration
-  turbopack: {
-    resolveAlias: {
-      'postcss': 'postcss',
-    },
   },
 }
 
