@@ -34,3 +34,7 @@ Thumbs.db
 public/images/optimized/
 
 .vercel
+# Scripts with credentials
+scripts/*.js
+!scripts/create-admin.js
+!scripts/create-settings.js
