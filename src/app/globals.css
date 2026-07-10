@@ -47,3 +47,25 @@ body {
     padding-bottom: 5rem;
   }
 }
+
+
+@keyframes scrollRight {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-scroll-right {
+  animation: scrollRight 25s linear infinite;
+}
+
+.h-70:hover .animate-scroll-right {
+  animation-play-state: paused;
+}
+
+.h-70 {
+  height: 17.5rem;
+}

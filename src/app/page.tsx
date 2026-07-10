@@ -1,13 +1,68 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+
+interface GalleryImage {
+  _id: string;
+  url: string;
+  alt: string;
+  title: string;
+}
+
 export default function Home() {
+  const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchGalleryImages();
+  }, []);
+
+  const fetchGalleryImages = async () => {
+    try {
+      const res = await fetch('/api/public/gallery');
+      const data = await res.json();
+      if (data.success) {
+        setGalleryImages(data.data);
+      }
+    } catch (error) {
+      console.error('Error fetching gallery images:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Default images if none in database
+  const defaultImages = [
+    { _id: '1', url: '/images/gallery-1.jpg', alt: 'Community engagement', title: 'Community Engagement' },
+    { _id: '2', url: '/images/gallery-2.jpg', alt: 'Youth empowerment', title: 'Youth Empowerment' },
+    { _id: '3', url: '/images/gallery-3.jpg', alt: 'Education program', title: 'Education Program' },
+    { _id: '4', url: '/images/gallery-4.jpg', alt: 'Health awareness', title: 'Health Awareness' },
+    { _id: '5', url: '/images/gallery-5.jpg', alt: 'Community support', title: 'Community Support' },
+    { _id: '6', url: '/images/gallery-6.jpg', alt: 'Sustainable development', title: 'Sustainable Development' },
+  ];
+
+  const images = galleryImages.length > 0 ? galleryImages : defaultImages;
+
   return (
-    <main >
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-primary to-primary-dark text-white py-20 md:py-32">
-        <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8 text-center ">
+    <main>
+      {/* Hero Section - Full Screen with Background Image */}
+      <section className="relative h-screen w-full flex items-center justify-center bg-primary-dark">
+        <div 
+          className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: "url('/images/hero.jpeg')",
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+        >
+          <div className="absolute inset-0 bg-black/50"></div>
+        </div>
+        
+        <div className="relative z-10 max-w-9xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
             Empowering individuals to build stronger communities
           </h1>
-          <p className="text-xl md:text-2xl text-primary-light mb-10 max-w-9xl mx-auto">
+          <p className="text-xl md:text-2xl text-white/80 mb-10 max-w-9xl mx-auto">
             Founded in 2024 by Kenyan changemakers inspired by young women's challenges around menstrual health in Kibera
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -27,7 +82,72 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Who We Are */}
+      {/* Auto-Scrolling Gallery Section - h-70 */}
+      <section className="h-70 w-full bg-neutral-100 overflow-hidden relative">
+        {loading ? (
+          <div className="flex items-center justify-center h-full">
+            <p className="text-neutral-500">Loading gallery...</p>
+          </div>
+        ) : (
+          <div className="flex items-center h-full">
+            <div 
+              className="flex gap-6 animate-scroll-right"
+              style={{
+                animation: 'scrollRight 25s linear infinite',
+              }}
+            >
+              {images.map((img) => (
+                <div 
+                  key={img._id}
+                  className="flex-shrink-0 w-64 h-48 rounded-lg overflow-hidden shadow-md group relative"
+                >
+                  <img 
+                    src={img.url} 
+                    alt={img.alt || img.title || 'Gallery image'}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    loading="lazy"
+                  />
+                  {img.title && (
+                    <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-xs p-2 text-center">
+                      {img.title}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+            
+            {/* Duplicate for seamless scrolling */}
+            <div 
+              className="flex gap-6 animate-scroll-right"
+              style={{
+                animation: 'scrollRight 25s linear infinite',
+              }}
+              aria-hidden="true"
+            >
+              {images.map((img) => (
+                <div 
+                  key={`duplicate-${img._id}`}
+                  className="flex-shrink-0 w-64 h-48 rounded-lg overflow-hidden shadow-md group relative"
+                >
+                  <img 
+                    src={img.url} 
+                    alt={img.alt || img.title || 'Gallery image'}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    loading="lazy"
+                  />
+                  {img.title && (
+                    <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-xs p-2 text-center">
+                      {img.title}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </section>
+
+      {/* Rest of the sections remain the same */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl md:text-4xl font-bold text-center text-primary mb-8">Who We Are</h2>
@@ -49,7 +169,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats Section */}
       <section className="py-16 bg-neutral-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -69,7 +188,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Goal, Vision, Mission */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -95,7 +213,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Objectives */}
       <section className="py-16 bg-neutral-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl md:text-4xl font-bold text-center text-primary mb-12">Our Objectives</h2>
@@ -115,7 +232,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Core Values */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl md:text-4xl font-bold text-center text-primary mb-12">Our Core Values</h2>
@@ -135,14 +251,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* What We Do & Counties */}
       <section className="py-16 bg-primary text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">What We Do</h2>
           <p className="text-xl text-primary-light max-w-3xl mx-auto mb-12">
             Amplify Hope Africa believes in the power of community. We actively engage local stakeholders, partner with schools, and collaborate with like-minded organizations to maximize our impact.
           </p>
-
           <h3 className="text-2xl font-bold mb-6">Targeted Counties</h3>
           <div className="flex flex-wrap justify-center gap-4">
             {['Nairobi', 'Kisumu', 'Siaya', 'Homabay', 'Kisii'].map((county) => (
@@ -154,7 +268,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA Banner */}
       <section className="py-16 bg-secondary">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-neutral-900 mb-4">
@@ -180,5 +293,5 @@ export default function Home() {
         </div>
       </section>
     </main>
-  )
+  );
 }

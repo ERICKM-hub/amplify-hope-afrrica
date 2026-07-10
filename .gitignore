@@ -33,3 +33,4 @@ Thumbs.db
 # Public assets
 public/images/optimized/
 
+.vercel
